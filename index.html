@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Fotos - Para Mônica</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            background-color: #ffe6e6;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #ff9999, #ffb3b3);
+            color: white;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+
+        header h2 {
+            margin-top: 10px;
+            font-size: 2.5em;
+            color: #ffe6e6;
+        }
+
+        header p {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #fff;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        header .anniversary {
+            margin-top: 30px;
+            font-size: 1.8em;
+            color: #fff;
+            background-color: #ff9999;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .thumbnail {
+            margin: 10px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            width: 200px;
+            height: auto;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .thumbnail:hover {
+            border-color: #ff9999;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .modal-content img {
+            width: 80%;
+            max-width: 700px;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #ffb3b3;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            transition: 0.6s ease;
+            user-select: none;
+        }
+
+        .next {
+            right: 0;
+        }
+
+        .prev {
+            left: 0;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Nossa Galeria de Amor</h1>
+        <h2>Para Mônica, com todo meu amor</h2>
+        <p>Querida Mônica, cada momento ao seu lado é especial e cheio de alegria. Essas fotos são um reflexo da nossa jornada juntos. Obrigado por ser minha parceira, minha amiga e meu amor. Te amo eternamente!</p>
+        <p class="anniversary">Feliz 9º Dia dos Namorados juntos!</p>
+    </header>
+
+    <main>
+        <div class="gallery" id="gallery">
+            <!-- As imagens serão carregadas aqui dinamicamente -->
+        </div>
+    </main>
+
+    <div id="myModal" class="modal">
+        <span class="close cursor" onclick="closeModal()">&times;</span>
+        <div class="modal-content" id="modal-content">
+            <!-- Os slides serão carregados aqui dinamicamente -->
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+    </div>
+
+    <script>
+        const totalImages = 327;
+        const galleryContainer = document.getElementById('gallery');
+        const modalContent = document.getElementById('modal-content');
+        let slideIndex = 1;
+
+        function openModal() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        function showSlides(n) {
+            let slides = document.getElementsByClassName("mySlides");
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex - 1].style.display = "block";
+        }
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function createGallery() {
+            for (let i = 1; i <= totalImages; i++) {
+                const imgURL = `https://nextmovie.lhoc1g.workers.dev/0:/mo/foto%20(${i}).jpg`;
+
+                // Create gallery thumbnail
+                const thumbnail = document.createElement('img');
+                thumbnail.src = imgURL;
+                thumbnail.alt = `Foto ${i}`;
+                thumbnail.classList.add('thumbnail');
+                thumbnail.onclick = () => {
+                    openModal();
+                    currentSlide(i);
+                };
+                galleryContainer.appendChild(thumbnail);
+
+                // Create modal slide
+                const slide = document.createElement('div');
+                slide.classList.add('mySlides');
+                const slideImg = document.createElement('img');
+                slideImg.src = imgURL;
+                slideImg.alt = `Foto ${i}`;
+                slide.appendChild(slideImg);
+                modalContent.appendChild(slide);
+            }
+        }
+
+        createGallery();
+        showSlides(slideIndex);
+    </script>
+</body>
+</html>
